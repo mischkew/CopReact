@@ -48,11 +48,11 @@ module.exports = function (grunt) {
             dest: 'src/less/vendor/bootstrap'
           },
 
-          // html
+          // html, libs
           {
             expand: true,
             cwd: './src',
-            src: ['index.html'],
+            src: ['index.html', 'lib/cop/**'],
             dest: './public'
           },
 
