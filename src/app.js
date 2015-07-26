@@ -4,6 +4,7 @@ import React from 'react/addons'
 import ContextControl from './lib/ContextControl'
 import Context from './lib/Context'
 import Layers from './lib/Layers'
+import _ from 'lodash'
 
 const divStyle = {
   width: 100,
@@ -14,23 +15,37 @@ const divStyle = {
 const ParentComponent = React.createClass({
   mixins: [ ContextControl ],
 
-  // getInitialState() {
-  //   this.setupLayer('myLayer')
-  //   console.log('state', this)
-  //   this.applyLayersToSubcomponents()
-  //   console.log('child context from parent', this.getChildContext())
-  //
-  //   return {}
-  // },
+  getInitialState() {
+    return {
+      layerOn: false
+    }
+  },
 
   componentDidMount() {
     this.setupLayer('myLayer')
     this.applyLayersToSubcomponents()
+
+    this.setState({ layerOn: true })
+  },
+
+  handleClick() {
+    let layerOn = !this.state.layerOn
+    let newState = React.addons.update(this.state, {
+      layerOn: { $set: layerOn }
+    })
+    this.setState(newState)
+
+    if (layerOn) {
+      this.applyLayersToSubcomponents()
+    } else {
+      this.unapplyLayersFromSubcomponents()
+    }
   },
 
   render() {
     return (
       <div style={divStyle}>
+        <div onClick={this.handleClick}>ToggleLayer</div>
         <ChildComponent />
       </div>
     )
@@ -43,13 +58,12 @@ const divChildStyle = {
   backgroundColor: 'blue'
 }
 
-const LayeredContext = {
+const LayeredContext = Context
+_.extend(LayeredContext, {
   renderExtra() {
-    console.log('render extra')
     return 'my extra text'
   }
-}
-// Object.extend(LayeredContext, LayerableObjectTrait)
+})
 
 Layers.setupLayer('myLayer').refineObject(LayeredContext, {
   renderExtra() {
@@ -57,12 +71,10 @@ Layers.setupLayer('myLayer').refineObject(LayeredContext, {
   }
 })
 
-
 const ChildComponent = React.createClass({
-  mixins: [ Context, LayeredContext ],
+  mixins: [ LayeredContext ],
 
   render() {
-    console.log('child context layers', this.context.layers)
     return (
       <div style={divChildStyle}>
         {this.renderExtra()}
@@ -74,8 +86,3 @@ const ChildComponent = React.createClass({
 window.onload = () => {
   React.render(<ParentComponent />, document.body)
 }
-
-// LayeredContext.setWithLayers([Layers.get('myLayer')])
-// console.log('manual', LayeredContext.renderExtra())
-// LayeredContext.setWithLayers([])
-// console.log('manual2', LayeredContext.renderExtra())

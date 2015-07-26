@@ -3,14 +3,18 @@
 import _ from 'lodash'
 import Layers from './Layers'
 import React from 'react/addons'
+import warning from 'react/lib/warning'
 
 const ContextControl = {
   setupLayer(layerName) {
     this.layerName = layerName
     this.layer = Layers.setupLayer(layerName)
 
-    if (!this.layer) {
-      throw new Error('could not instantiate a new layer for this context')
+    if (process.env.NODE_ENV !== 'production') {
+      warning(
+        !this.layer,
+        'could not instantiate a new layer for this context'
+      )
     }
   },
 
@@ -29,8 +33,6 @@ const ContextControl = {
       layers: this.state.activeLayers
     }
   },
-
-  /** PUBLIC API **/
 
   alreadyActiveLayers() {
     return this.context && this.context.layers && _.isArray(this.context.layers) ? this.context.layers : []
