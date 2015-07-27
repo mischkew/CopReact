@@ -2,17 +2,17 @@
 
 import _ from 'lodash'
 import Layers from './Layers'
-import React from 'react/addons'
+import React from 'react'
 import warning from 'react/lib/warning'
 
 const ContextControl = {
-  setupLayer(layerName) {
+  attachLayer(layerName) {
     this.layerName = layerName
-    this.layer = Layers.setupLayer(layerName)
+    this.layer = Layers.setupLayer(layerName) // create or get layer
 
     if (process.env.NODE_ENV !== 'production') {
       warning(
-        !this.layer,
+        this.layer,
         'could not instantiate a new layer for this context'
       )
     }
@@ -24,6 +24,17 @@ const ContextControl = {
     }
   },
 
+  getDefaultProps() {
+    return {
+      layerOn: false
+    }
+  },
+
+  propTypes: {
+    layer: React.PropTypes.string,
+    layerOn: React.PropTypes.bool
+  },
+
   childContextTypes: {
     layers: React.PropTypes.arrayOf(React.PropTypes.instanceOf(Layer))
   },
@@ -31,6 +42,23 @@ const ContextControl = {
   getChildContext() {
     return {
       layers: this.state.activeLayers
+    }
+  },
+
+  setupLayerOnMount() {
+    if (process.env.NODE_ENV !== 'production') {
+      warning(
+        this.props.layer !== undefined,
+        'setup layer was called but no layer property was given'
+      )
+    }
+
+    if (this.props.layer !== null) {
+      this.attachLayer(this.props.layer)
+
+      if (this.props.layerOn) {
+        this.applyLayersToSubcomponents()
+      }
     }
   },
 

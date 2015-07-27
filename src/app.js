@@ -1,88 +1,27 @@
 'use strict'
 
-import React from 'react/addons'
-import ContextControl from './lib/ContextControl'
-import Context from './lib/Context'
-import Layers from './lib/Layers'
-import _ from 'lodash'
+import React from 'react'
+import Board from './components/Board'
+import List from './components/List'
+import Card from './components/Card'
 
-const divStyle = {
-  width: 100,
-  height: 100,
-  backgroundColor: 'red'
-}
+//console.log(Board, List, Card)
 
-const ParentComponent = React.createClass({
-  mixins: [ ContextControl ],
-
-  getInitialState() {
-    return {
-      layerOn: false
-    }
-  },
-
-  componentDidMount() {
-    this.setupLayer('myLayer')
-    this.applyLayersToSubcomponents()
-
-    this.setState({ layerOn: true })
-  },
-
-  handleClick() {
-    let layerOn = !this.state.layerOn
-    let newState = React.addons.update(this.state, {
-      layerOn: { $set: layerOn }
-    })
-    this.setState(newState)
-
-    if (layerOn) {
-      this.applyLayersToSubcomponents()
-    } else {
-      this.unapplyLayersFromSubcomponents()
-    }
-  },
-
+const Wrapper = React.createClass({
   render() {
     return (
-      <div style={divStyle}>
-        <div onClick={this.handleClick}>ToggleLayer</div>
-        <ChildComponent />
-      </div>
-    )
-  }
-})
-
-const divChildStyle = {
-  width: 50,
-  height: 50,
-  backgroundColor: 'blue'
-}
-
-const LayeredContext = Context
-_.extend(LayeredContext, {
-  renderExtra() {
-    return 'my extra text'
-  }
-})
-
-Layers.setupLayer('myLayer').refineObject(LayeredContext, {
-  renderExtra() {
-    return cop.proceed() + 'my special layered extra'
-  }
-})
-
-const ChildComponent = React.createClass({
-  mixins: [ LayeredContext ],
-
-  render() {
-    return (
-      <div style={divChildStyle}>
-        {this.renderExtra()}
-      </div>
+      <Board>
+        <List layer="CollapsedTasks" layerOn={true}>
+          <Card />
+        </List>
+        <List layer="ExpandedTasks" layerOn={true}>
+          <Card />
+        </List>
+      </Board>
     )
   }
 })
 
 window.onload = () => {
-  React.render(<ParentComponent />, document.body)
+  React.render(<Wrapper />, document.getElementById('wrapper'))
 }

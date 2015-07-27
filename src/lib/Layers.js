@@ -3,9 +3,6 @@
 let layers = new Map()
 
 class Layers {
-  constructor() {
-  }
-
   setupLayer(layerName) {
     if (this.layerExists(layerName)) {
       return this.get(layerName)
@@ -20,12 +17,12 @@ class Layers {
     return layers.has(layerName)
   }
 
-  [Symbol.iterator]() {
-    return layers[Symbol.iterator]()
-  }
-
   get(layerName) {
     return layers.get(layerName)
+  }
+
+  [Symbol.iterator]() {
+    return layers[Symbol.iterator]()
   }
 }
 
