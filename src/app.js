@@ -1,27 +1,32 @@
 'use strict'
 
 import React from 'react'
-import Board from './components/Board'
-import List from './components/List'
-import Card from './components/Card'
 
-//console.log(Board, List, Card)
-
-const Wrapper = React.createClass({
+let Component = React.createClass({
+  myFunc() { return 'func' },
   render() {
-    return (
-      <Board>
-        <List layer="CollapsedTasks" layerOn={true}>
-          <Card />
-        </List>
-        <List layer="ExpandedTasks" layerOn={true}>
-          <Card />
-        </List>
-      </Board>
-    )
+    return <div>{this.myFunc()}</div>
   }
 })
 
+let L = new Layer('layer')
+L.refineClass(Component, {
+  myFunc() { return cop.proceed() + 'func' }
+})
+
+class MyClass {
+  myFunc() { return 'func' }
+}
+
+L.refineClass(MyClass, {
+  myFunc() { return cop.proceed() + 'func' }
+})
+
+let m = new MyClass()
+console.log(m.myFunc())
+L.beGlobal()
+console.log(m.myFunc())
+
 window.onload = () => {
-  React.render(<Wrapper />, document.getElementById('wrapper'))
+  React.render(<Component></Component>, document.body)
 }

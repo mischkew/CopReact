@@ -1,3 +1,4 @@
 src/less/vendor
 src/bower_components
 node_modules
+public

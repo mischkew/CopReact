@@ -26,7 +26,8 @@ const ContextControl = {
 
   getDefaultProps() {
     return {
-      layerOn: false
+      // turn on by default, so implicit layer activation is handled automatically
+      layerOn: true
     }
   },
 
