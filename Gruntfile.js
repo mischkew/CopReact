@@ -32,7 +32,11 @@ module.exports = function (grunt) {
       },
       dist: {
         files: {
-          'public/app.js': 'src/app.js'
+          'public/app.js': 'src/app.js',
+          'public/benchmarks/simple-layered/benchmark.js': 'benchmarks/simple-layered/benchmark.js',
+          'public/benchmarks/simple/benchmark.js': 'benchmarks/simple/benchmark.js',
+          'public/benchmarks/collection-layered/benchmark.js': 'benchmarks/collection-layered/benchmark.js',
+          'public/benchmarks/collection/benchmark.js': 'benchmarks/collection/benchmark.js'
         }
       }
     },
@@ -48,12 +52,20 @@ module.exports = function (grunt) {
             dest: 'src/less/vendor/bootstrap'
           },
 
-          // html
+          // html, libs
           {
             expand: true,
             cwd: './src',
-            src: ['index.html'],
+            src: ['index.html', 'lib/cop/**'],
             dest: './public'
+          },
+
+          // benchmarks
+          {
+            expand: true,
+            cwd: './benchmarks',
+            src: ['**/*.html'],
+            dest: './public/benchmarks'
           },
 
           // images
@@ -69,7 +81,7 @@ module.exports = function (grunt) {
 
     watch: {
       all: {
-        files: 'src/**/*',
+        files: ['src/**/*', 'benchmarks/**/*'],
         tasks: ['build']
       }
     },

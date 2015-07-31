@@ -1,0 +1,10 @@
+# gruntfile -- we write es6, but cannot in gruntfile
+Gruntfile.js
+
+# third party libs
+node_modules
+src/bower_components
+src/lib/cop
+
+# build dirs
+public
